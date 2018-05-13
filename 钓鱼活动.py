@@ -9,7 +9,8 @@ import pandas as pd
 import os
 
 
-os.chdir( r"D:\Work\201805\20180508 - 日志\log")
+
+os.chdir( r"D:\Python_Working_Directory\Date\Fishing\FishingLog")
 ## 函数: 遍历文件夹下所有对象
 def loop_folder( path):
     ## 遍历文件夹
@@ -25,15 +26,24 @@ result = pd.DataFrame( columns =
                        'registertime', 'result', 'reward', 'server_id', 
                        'success_rate', 'user_id', 'user_name'])
     
-    
+'''
 for i in loop_folder( os.getcwd()):
     temp_data = pd.read_json( 
             str( os.getcwd() + '\\' + i + '\\' + i + r"_tb_log_fishing.json"), 
             lines = True)
     print( str( i + r"_tb_log_fishing.json... Done!" ))
     result = pd.concat( [ result, temp_data])
-    
-   
+
+## Json输出
+json_result = result.to_json( orient='split')  
+fileObject = open( 'json_result.json', 'w')  
+fileObject.write( json_result)  
+fileObject.close() 
+
+'''
+
+## result =  pd.concat( [ result, pd.read_json( "json_result.json", lines = True)]) 
+
 ##行数
 print( len( result)) ## 6896880
 
@@ -57,16 +67,14 @@ gp_item_result = gp_item.size()
 gp_item_result.to_csv( 'item_result.csv')
 
 
-'''
-writer = pd.ExcelWriter( r'D:\Work\201805\20180508 - 日志\fishing.xlsx')
-data_all.to_excel( writer, index = False, encoding = 'utf-8', sheet_name = 'Sheet')
-writer.save()
-'''
+## 读取充值玩家首充时间
+## 测试玩家 2298180, 85服, 5.1充值
+print( result[ result.server_id == 85, result.UserId == 2298180] )
 
-## Json输出
-'''
-json_result = result.to_json( orient='split')  
-fileObject = open( 'json_result.json', 'w')  
-fileObject.write( json_result)  
-fileObject.close() 
-'''
+fishing_recharge = pd.read_excel( r"D:\Python_Working_Directory\Date\Fishing\recharge.xlsx", 
+                                 sheetname = "钓鱼礼包首充时间")
+
+## Merge
+result_pay = pd.merge( result, fishing_recharge, 
+                      on = [ 'server_id', 'UserId'],
+                           how = "right")
