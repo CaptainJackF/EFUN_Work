@@ -76,5 +76,7 @@ fishing_recharge = pd.read_excel( r"D:\Python_Working_Directory\Date\Fishing\rec
 
 ## Merge
 result_pay = pd.merge( result, fishing_recharge, 
-                      on = [ 'server_id', 'UserId'],
-                           how = "right")
+                      on = [ 'server_id', 'UserId'])
+
+## csv output
+result_pay.to_csv( r"C:\Users\Efun\Desktop\20180516 - E180503活动分析\result_pay.csv")
