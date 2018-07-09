@@ -411,7 +411,8 @@ Whole_Cohoe_Data2 = Whole_Cohoe_Data.ix[ :, Whole_Cohoe_Data.columns.get_level_v
 
 
 ## ------ Output ------
-writer = pd.ExcelWriter( r'D:\Work\201807\20180707 - 报表自动化\Test.xlsx')
+output = str( r"C:\Users\Efun\Desktop\日报基础数据 - %s.xlsx" % (date_calculate()[1]) )
+writer = pd.ExcelWriter( output)
 
 And_actual_data.to_excel( writer, index = False, encoding = 'utf-8', sheet_name = 'And_actual')
 iOS_actual_data.to_excel( writer, index = False, encoding = 'utf-8', sheet_name = 'iOS_actual')
