@@ -2,24 +2,24 @@ library( readxl)
 library( dplyr)
 library( ggplot2)
 
-## ÉèÖÃ¹¤×÷Â·¾¶
-setwd( "D:\\Work\\201811\\20181117 - ÊÂ¼şµãÄ£ĞÍ\\Data")
+## è®¾ç½®å·¥ä½œè·¯å¾„
+setwd( "D:\\Work\\201811\\20181117 - äº‹ä»¶ç‚¹æ¨¡å‹\\Data")
 
-## ¶ÁÈ¡Ä¿±êÓÃ»§ÁĞ±í
+## è¯»å–ç›®æ ‡ç”¨æˆ·åˆ—è¡¨
 Ori_dataset <- tbl_df( 
-  read_excel( "D:\\Work\\201811\\20181117 - ÊÂ¼şµãÄ£ĞÍ\\Ä¿±êÓÃ»§.xlsx", "Sheet")
+  read_excel( "D:\\Work\\201811\\20181117 - äº‹ä»¶ç‚¹æ¨¡å‹\\ç›®æ ‡ç”¨æˆ·.xlsx", "Sheet")
 )
 
-## Ñù±¾Æ½ºâĞÔ: ²»Æ½ºâ£¬ĞèÒª×î¼É³éÑù
+## æ ·æœ¬å¹³è¡¡æ€§: ä¸å¹³è¡¡ï¼Œéœ€è¦æœ€å¿ŒæŠ½æ ·
 prop.table( table( Ori_dataset$user_type))
 
-## ¶ÁÈ¡ÌØÕ÷Êı¾İ±íÃûlist
+## è¯»å–ç‰¹å¾æ•°æ®è¡¨ålist
 file_list <- list.files( ".", pattern = "xlsx")
 
-## Ñ­»·±éÀú
+## å¾ªç¯éå†
 for( i in file_list){
   
-  ## ¶ÁÈ¡ÁÙÊ±Êı¾İ
+  ## è¯»å–ä¸´æ—¶æ•°æ®
   temp_file  <- tbl_df( 
     read_excel( i, "Sheet")
   )
@@ -35,79 +35,79 @@ for( i in file_list){
 
 
 
-## ÅÅ³ıµôÊĞÕşÌüµÈ¼¶Îª NA »ò < 3 ¼¶µÄÓÃ»§, ²¢
-Ori_dataset <- filter( Ori_dataset, !is.na(`ÊĞÕşÌüµÈ¼¶`) ) %>%
-  filter( `ÊĞÕşÌüµÈ¼¶` >= 3 ) %>%
+## æ’é™¤æ‰å¸‚æ”¿å…ç­‰çº§ä¸º NA æˆ– < 3 çº§çš„ç”¨æˆ·, å¹¶
+Ori_dataset <- filter( Ori_dataset, !is.na(`å¸‚æ”¿å…ç­‰çº§`) ) %>%
+  filter( `å¸‚æ”¿å…ç­‰çº§` >= 3 ) %>%
   mutate( 
-    `ÓÃ»§·ÖÀà` = user_type,
-    `Ê×´Î¸¶·ÑÊ±¼ä` =  as.numeric( difftime( as.Date( Ê×´Î¸¶·ÑÊ±¼ä, format = "%Y-%m-%d"), as.Date( reg_day, format = "%Y-%m-%d"), units = "days"))+1
+    `ç”¨æˆ·åˆ†ç±»` = user_type,
+    `é¦–æ¬¡ä»˜è´¹æ—¶é—´` =  as.numeric( difftime( as.Date( é¦–æ¬¡ä»˜è´¹æ—¶é—´, format = "%Y-%m-%d"), as.Date( reg_day, format = "%Y-%m-%d"), units = "days"))+1
     ) %>%
-  select( -one_of( c( "server_id","user_id","reg_day","last_login_time","date_diff","user_type","Ê×´Î¸¶·ÑÀñ°ü")))
+  select( -one_of( c( "server_id","user_id","reg_day","last_login_time","date_diff","user_type","é¦–æ¬¡ä»˜è´¹ç¤¼åŒ…")))
 
 #str( Ori_dataset)
 
-write.csv( Ori_dataset, 
-           "D:\\Work\\201811\\20181117 - ÊÂ¼şµãÄ£ĞÍ\\Ä¿±êÈËÈºÌØÕ÷(Backup).csv", row.names = F)
+write.csv( Ori_dataset, Ori_Testing
+           "D:\\Work\\201811\\20181117 - äº‹ä»¶ç‚¹æ¨¡å‹\\ç›®æ ‡äººç¾¤ç‰¹å¾(Backup).csv", row.names = F)
 
 Ori_dataset <- tbl_df( 
-  read.csv( "D:\\Work\\201811\\20181117 - ÊÂ¼şµãÄ£ĞÍ\\Ä¿±êÈËÈºÌØÕ÷.csv", stringsAsFactors = FALSE) 
+  read.csv( "D:\\Work\\201811\\20181117 - äº‹ä»¶ç‚¹æ¨¡å‹\\ç›®æ ‡äººç¾¤ç‰¹å¾.csv", stringsAsFactors = FALSE) 
 )
 
-## È±Ê§Öµ´¦Àí
+## ç¼ºå¤±å€¼å¤„ç†
 library( mice)
-miss_value <- md.pattern( Ori_dataset)  # ·µ»ØÊı¾İµÄÈ±Ê§ÖµµÄÄ£Ê½
+miss_value <- md.pattern( Ori_dataset)  # è¿”å›æ•°æ®çš„ç¼ºå¤±å€¼çš„æ¨¡å¼
 
-  ## µÇÂ¼Çé¿ö: 2000+ÌõÈ±Ê§Öµ£¬µ«ÕâÅúÓÃ»§¿ÉÄÜÊÇ2-3ÌìÕıºÃÎ´µÇÂ¼
+  ## ç™»å½•æƒ…å†µ: 2000+æ¡ç¼ºå¤±å€¼ï¼Œä½†è¿™æ‰¹ç”¨æˆ·å¯èƒ½æ˜¯2-3å¤©æ­£å¥½æœªç™»å½•
 table( is.na( Ori_dataset$X17 ))
-# Ori_dataset <- filter( Ori_dataset, !is.na(`µÇÂ¼´ÎÊı`) ) 
-Ori_dataset[ ,c('X17')][ is.na( Ori_dataset[ ,c('X17')])] <- 0   # ÏÈ½«È±Ê§ÖµÉèÎª0£¬·ÀÖ¹ÏÂÁĞÌŞ³ıÔëµãÊ±É¾µôÕâ²¿·ÖÓĞÓÃµÄÊı¾İ
-Ori_dataset <- filter( Ori_dataset, X17 <= 100 ) %>% # ÌŞ³ıµÇÂ¼´ÎÊı
+# Ori_dataset <- filter( Ori_dataset, !is.na(`ç™»å½•æ¬¡æ•°`) ) 
+Ori_dataset[ ,c('X17')][ is.na( Ori_dataset[ ,c('X17')])] <- 0   # å…ˆå°†ç¼ºå¤±å€¼è®¾ä¸º0ï¼Œé˜²æ­¢ä¸‹åˆ—å‰”é™¤å™ªç‚¹æ—¶åˆ æ‰è¿™éƒ¨åˆ†æœ‰ç”¨çš„æ•°æ®
+Ori_dataset <- filter( Ori_dataset, X17 <= 100 ) %>% # å‰”é™¤ç™»å½•æ¬¡æ•°
   mutate( X17 = ifelse( X17 == 0, NA, X17))
 
-# ÃÜ¶ÈÇúÏß
-ggplot( Ori_dataset, aes( x = X17, colour = Y)) + geom_density() # Ìí¼ÓÃÜ¶ÈÇúÏß
+# å¯†åº¦æ›²çº¿
+ggplot( Ori_dataset, aes( x = X17, colour = Y)) + geom_density() # æ·»åŠ å¯†åº¦æ›²çº¿
 
-# ²å²¹
+# æ’è¡¥
 full_1 <- select( Ori_dataset,
                   X17, X18, X4, X5, X8, X9, X22, X23, X24, X25, X26, X27, X28, Y)
 set.seed( 1000)
 tempData <- mice( full_1, seed = 1000)
-mice_output <- complete( tempData) ## ²é¿´ÍêÕûÊı¾İ
+mice_output <- complete( tempData) ## æŸ¥çœ‹å®Œæ•´æ•°æ®
 
 Ori_dataset$X17 <- mice_output$X17
 Ori_dataset$X18 <- mice_output$X18
 
-  ## Ìæ»»È±Ê§Öµ, ³ıÁËµÇÂ¼Çé¿öÍâ£¬ÆäÓàÈ±Ê§Öµ¿ÉÈÏÎªÊÇÎ´Íê³É
+  ## æ›¿æ¢ç¼ºå¤±å€¼, é™¤äº†ç™»å½•æƒ…å†µå¤–ï¼Œå…¶ä½™ç¼ºå¤±å€¼å¯è®¤ä¸ºæ˜¯æœªå®Œæˆ
 Ori_dataset[ is.na( Ori_dataset)] <- 0 
 
-## Òì³£Öµ´¦Àí
+## å¼‚å¸¸å€¼å¤„ç†
 
 
-## ÌØÕ÷Ïà¹ØĞÔ
-library( Hmisc)#¼ÓÔØ°ü
-library( corrplot)#ÏÈ¼ÓÔØ°ü
+## ç‰¹å¾ç›¸å…³æ€§
+library( Hmisc)#åŠ è½½åŒ…
+library( corrplot)#å…ˆåŠ è½½åŒ…
 res <- round( cor( Ori_dataset), 2)
 res2 <- rcorr( as.matrix( Ori_dataset))
 res2$r
 
 corrplot( res, type = "upper", order = "hclust", tl.col = "black", tl.srt = 45)
 
-as.Date( Ori_dataset$Ê×´Î¸¶·ÑÊ±¼ä,format = "%Y-%m-%d")
+as.Date( Ori_dataset$é¦–æ¬¡ä»˜è´¹æ—¶é—´,format = "%Y-%m-%d")
 
 
 table(is.na( Ori_dataset))
 table(is.na( Ori_dataset))
 
-## Âß¼­»Ø¹é
+## é€»è¾‘å›å½’
 
-Ori_dataset$`ÓÃ»§·ÖÀà` <- factor( Ori_dataset$`ÓÃ»§·ÖÀà`, order = TRUE)
-model <- glm( `ÓÃ»§·ÖÀà`~.,data = Ori_dataset, family = "binomial")
-model1 <- glm( `ÓÃ»§·ÖÀà`~ÁªÃËÖ°Î» + ÊÇ·ñÓĞ¶à¸öÓ¢ĞÛ + Ó¢ĞÛµÈ¼¶ + Ê×´Î¸¶·ÑÊ±¼ä + 
-                 VIPµÈ¼¶ + ÏÍÕßÖ®Ê¯²É¼¯´ÎÊı + µÇÂ¼´ÎÊı,
+Ori_dataset$`ç”¨æˆ·åˆ†ç±»` <- factor( Ori_dataset$`ç”¨æˆ·åˆ†ç±»`, order = TRUE)
+model <- glm( `ç”¨æˆ·åˆ†ç±»`~.,data = Ori_dataset, family = "binomial")
+model1 <- glm( `ç”¨æˆ·åˆ†ç±»`~è”ç›ŸèŒä½ + æ˜¯å¦æœ‰å¤šä¸ªè‹±é›„ + è‹±é›„ç­‰çº§ + é¦–æ¬¡ä»˜è´¹æ—¶é—´ + 
+                 VIPç­‰çº§ + è´¤è€…ä¹‹çŸ³é‡‡é›†æ¬¡æ•° + ç™»å½•æ¬¡æ•°,
               data = Ori_dataset, family = "binomial")
 summary( model1)
 
-## ¿¨·½¼ìÑé
+## å¡æ–¹æ£€éªŒ
 anova( model, model1, test = "Chisq")
 
 coef( model1)
@@ -118,11 +118,11 @@ exp( confint( model1))
 pre <- predict( model1, Ori_dataset)
 
 
-## Ä£ĞÍÆÀ¹À
+## æ¨¡å‹è¯„ä¼°
 library( pROC)
 
 pre <- predict( model1, Ori_dataset)
-modelroc <- roc( Ori_dataset$`ÓÃ»§·ÖÀà`, pre)
+modelroc <- roc( Ori_dataset$`ç”¨æˆ·åˆ†ç±»`, pre)
 plot( modelroc, print.auc = TRUE, auc.polygon = TRUE, grid = c(0.1, 0.2),
      grid.col = c("green", "red"), max.auc.polygon = TRUE,
      auc.polygon.col = "skyblue", print.thres = TRUE)
@@ -135,8 +135,8 @@ plot( modelroc, print.auc = TRUE, auc.polygon = TRUE, grid = c(0.1, 0.2),
 library(randomForest)
 library(ggplot2)
 
-n <-length( names( Ori_dataset))     #¼ÆËãÊı¾İ¼¯ÖĞ×Ô±äÁ¿¸öÊı£¬µÈÍ¬n=ncol(train_data)
-rate = 1     #ÉèÖÃÄ£ĞÍÎóÅĞÂÊÏòÁ¿³õÊ¼Öµ
+n <-length( names( Ori_dataset))     #è®¡ç®—æ•°æ®é›†ä¸­è‡ªå˜é‡ä¸ªæ•°ï¼Œç­‰åŒn=ncol(train_data)
+rate = 1     #è®¾ç½®æ¨¡å‹è¯¯åˆ¤ç‡å‘é‡åˆå§‹å€¼
 
 
   set.seed( 1234)
